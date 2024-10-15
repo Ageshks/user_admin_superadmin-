@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0e2433;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #45b6fe;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #0e2433;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #45b6fe;
+        }
+
+        /* Add more styles and components for your dashboard here */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SUPER ADMIN Dashboard</h1>
+    </div>
+    <div class="container">
+        <h2>Welcome, [[${user.getFullname()}]]</h2>
+        
+        <span sec:authorize="isAuthenticated">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" style="background-color: #45b6fe; border-radius: 10px;">Logout</button>
+            </form>
+        
+        </span>
+        <h2> USERS AND ADMINS</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Modify</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through users and display each user's details -->
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">1</td>
+                    <td th:text="${user.fullname}">John Doe</td>
+                    <td th:text="${user.email}">john.doe@example.com</td>
+                    <td th:text="${user.role}">USER</td>
+                    <td>
+                        <form th:action="@{/super-admin/change-role/{id}(id=${user.id})}" method="post">
+                            <select name="role">
+                                <option value="USER" th:selected="${user.role == 'USER'}">USER</option>
+                                <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">ADMIN</option>
+                                <option value="SUPER_ADMIN" th:selected="${user.role == 'SUPER_ADMIN'}">SUPER ADMIN</option>
+                            </select>
+                            <button type="submit">Change Role</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/super-admin/delete-user/{id}(id=${user.id})}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Bus Routes</h2>
+        <div class="login-btn">
+            <a class="btn" th:href="@{/super-admin/add-route}">
+                <p style="color: white;">Add New Bus Route</p></a>
+        </div>
+        <div class="login-btn">
+            <a class="btn" th:href="@{/super-admin/view-routes}">
+                <p style="color: red;">View Route</p>
+            </a>
+        </div>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Route Number</th>
+            <th>Start Location</th>
+            <th>End Location</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="route : ${routes}">
+            <td th:text="${route.routeNumber}"></td>
+            <td th:text="${route.startLocation}"></td>
+            <td th:text="${route.endLocation}"></td>
+            <td th:text="${route.departureTime}"></td> 
+        </tr>
+    </tbody>
+</table>
+    </div>
+    
+
+    
+    
+</body>
+</html>

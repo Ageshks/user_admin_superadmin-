@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Bus Route</title>
+</head>
+<body>
+    <h1>Edit Bus Route</h1>
+    
+    <!-- Edit Bus Route Form -->
+    <form action="#" th:action="@{/super-admin/edit-route/{id}(id=${busRoute.id})}" th:object="${busRoute}" method="post">
+        <label for="routeNumber">Route Number:</label>
+        <input type="text" id="routeNumber" th:field="*{routeNumber}" required/>
+    
+        <label for="startLocation">Start Location:</label>
+        <input type="text" id="startLocation" th:field="*{startLocation}" required/>
+    
+        <label for="endLocation">End Location:</label>
+        <input type="text" id="endLocation" th:field="*{endLocation}" required/>
+    
+        <label for="departureTime">Departure Time:</label>
+        <input type="time" id="departureTime" th:field="*{departureTime}" required/> <!-- New input for time -->
+    
+        <button type="submit">Update Route</button>
+    </form>
+    
+
+    <!-- Link to return to the routes page -->
+    <div>
+        <a th:href="@{/super-admin/view-routes}">Back to Routes</a>
+    </div>
+</body>
+</html>

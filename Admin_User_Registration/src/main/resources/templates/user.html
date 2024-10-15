@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0e2433;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #45b6fe;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #0e2433;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            justify-content: space-around;
+        }
+
+        h2 {
+            color: #45b6fe;
+        }
+        .card{
+            background-color: #388ac1;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(160, 10, 10, 0.2);
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+        }
+
+        /* Add more styles and components for your dashboard here */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>USER Dashboard</h1>
+    </div>
+    <div class="container">
+        <h2>Welcome, [[${user.getFullname()}]]</h2>
+        
+        <span sec:authorize="isAuthenticated">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" style="background-color: #45b6fe; border-radius: 10px;">Logout</button>
+            </form>
+            
+        
+        </span>
+
+        <div class="card">
+            <div class="container">
+                <h3>first</h3>
+                <p>product 1</p>
+                <button>Add To Cart</button>
+
+            </div>
+            <div class="container">
+                <img src="" alt="image">
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="container">
+                <h3>Second</h3>
+                <p>product 2</p>
+                <button>Add To Cart</button>
+            </div>
+            <div class="container">
+                <img src="" alt="image">
+            </div>
+
+        </div>
+
+
+        <div class="card">
+            <div class="container">
+                <h3>Third</h3>
+                <p>product 3</p>
+                <button>Add To Cart</button>
+            </div>
+            <div class="container">
+                <img src="" alt="image">
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>
