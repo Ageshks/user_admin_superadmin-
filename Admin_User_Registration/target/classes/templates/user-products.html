@@ -2,6 +2,8 @@
     <div class="card">
         <img th:src="${product.imageUrl}" alt="Product Image">
         <h3 th:text="${product.name}"></h3>
+        <img th:src="'data:image/jpeg;base64,' + ${T(org.springframework.util.Base64Utils).encodeToString(product.image)}" alt="Product Image"/>
+
         <p th:text="'Description: ' + ${product.description}"></p>
         <p th:text="'Price: $' + ${product.price}"></p>
         <p th:text="'Quantity: ' + ${product.quantity}"></p>

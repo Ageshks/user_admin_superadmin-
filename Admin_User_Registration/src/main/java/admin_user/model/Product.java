@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 @Entity
 public class Product {
@@ -22,19 +23,19 @@ public class Product {
     @Column(nullable = false)
     private double price;
 
-    @Column(nullable = true) // Optional
-    private String imageUrl;
+    @Lob
+    private byte[] image;
 
     // Default constructor
     public Product() {
     }
 
     // Constructor with fields
-    public Product(String name, int quantity, double price, String imageUrl) {
+    public Product(String name, int quantity, double price, byte[] image) {
         this.name = name;
         this.quantity = quantity;
         this.price = price;
-        this.imageUrl = imageUrl;
+        this.image = image;
     }
 
     // Getters and setters
@@ -70,22 +71,11 @@ public class Product {
         this.price = price;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

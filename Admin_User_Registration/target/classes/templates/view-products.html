@@ -25,6 +25,8 @@
                     <a th:href="@{/super-admin/products/edit/{id}(id=${product.id})}">Edit</a>
                     <a th:href="@{/super-admin/products/delete/{id}(id=${product.id})}">Delete</a>
                 </td>
+                <img th:src="'data:image/jpeg;base64,' + ${T(org.springframework.util.Base64Utils).encodeToString(product.image)}" alt="Product Image"/>
+
             </tr>
         </tbody>
     </table>
