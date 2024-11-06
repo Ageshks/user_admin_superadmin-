@@ -36,7 +36,32 @@
             color: #45b6fe;
         }
 
-        /* Add more styles and components for your dashboard here */
+        .login-btn a {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #45b6fe;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #45b6fe;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #45b6fe;
+        }
     </style>
 </head>
 <body>
@@ -50,9 +75,9 @@
             <form th:action="@{/logout}" method="post">
                 <button type="submit" style="background-color: #45b6fe; border-radius: 10px;">Logout</button>
             </form>
-        
         </span>
-        <h2> USERS AND ADMINS</h2>
+
+        <h2>USERS AND ADMINS</h2>
         <table border="1">
             <thead>
                 <tr>
@@ -64,7 +89,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Loop through users and display each user's details -->
                 <tr th:each="user : ${users}">
                     <td th:text="${user.id}">1</td>
                     <td th:text="${user.fullname}">John Doe</td>
@@ -78,49 +102,77 @@
                                 <option value="SUPER_ADMIN" th:selected="${user.role == 'SUPER_ADMIN'}">SUPER ADMIN</option>
                             </select>
                             <button type="submit">Change Role</button>
+                            <form th:action="@{/super-admin/delete-user/{id}(id=${user.id})}" method="post">
+                                <button type="submit">Delete</button>
+                            </form>
+                        
                         </form>
+
+                        
                     </td>
-                    <td>
-                        <form th:action="@{/super-admin/delete-user/{id}(id=${user.id})}" method="post">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
+                    
                 </tr>
             </tbody>
         </table>
 
         <h2>Bus Routes</h2>
         <div class="login-btn">
-            <a class="btn" th:href="@{/super-admin/add-route}">
-                <p style="color: white;">Add New Bus Route</p></a>
+            <a th:href="@{/super-admin/add-route}">Add New Bus Route</a>
         </div>
         <div class="login-btn">
-            <a class="btn" th:href="@{/super-admin/view-routes}">
-                <p style="color: red;">View Route</p>
-            </a>
+            <a th:href="@{/super-admin/view-routes}">View Routes</a>
         </div>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Route Number</th>
-            <th>Start Location</th>
-            <th>End Location</th>
-            <th>Time</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="route : ${routes}">
-            <td th:text="${route.routeNumber}"></td>
-            <td th:text="${route.startLocation}"></td>
-            <td th:text="${route.endLocation}"></td>
-            <td th:text="${route.departureTime}"></td> 
-        </tr>
-    </tbody>
-</table>
-    </div>
-    
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Route Number</th>
+                    <th>Start Location</th>
+                    <th>End Location</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="route : ${routes}">
+                    <td th:text="${route.routeNumber}"></td>
+                    <td th:text="${route.startLocation}"></td>
+                    <td th:text="${route.endLocation}"></td>
+                    <td th:text="${route.departureTime}"></td>
+                </tr>
+            </tbody>
+        </table>
 
-    
-    
+        <h2>Products</h2>
+        <div class="login-btn">
+            <a th:href="@{/super-admin/products/add}">Add New Product</a>
+        </div>
+        <div class="login-btn">
+            <a th:href="@{/super-admin/products}">View Products</a>
+        </div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.id}"></td>
+                    <td th:text="${product.name}"></td>
+                    <td th:text="${product.quantity}"></td>
+                    <td>
+                        <form th:action="@{/super-admin/edit-product/{id}(id=${product.id})}" method="get">
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form th:action="@{/super-admin/delete-product/{id}(id=${product.id})}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

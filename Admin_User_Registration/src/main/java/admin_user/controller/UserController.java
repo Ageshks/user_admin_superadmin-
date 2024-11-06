@@ -140,7 +140,7 @@ public String superAdminPage(Model model, Principal principal) {
 	List<BusRoute> routes = busRouteService.getAllRoutes(); // Adjusted to use the injected service
     model.addAttribute("routes", routes);
 
-    return "admin"; // Ensure 'admin.html' exists
+    return "admin"; 
 	}
 
 	@PostMapping("/admin/delete-user/{id}")

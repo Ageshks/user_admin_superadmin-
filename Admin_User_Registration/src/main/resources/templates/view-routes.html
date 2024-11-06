@@ -13,11 +13,18 @@
             <p style="color: red;">Add New Route</p>
         </a>
     </div>
-    
-    <div class="login-btn">
-        <a class="btn" th:href="@{/super-admin}">
-            <p style="color: red;">Return to Super Admin Dashboard</p>
-        </a>
+    <div>
+        <a th:href="@{/super-admin}">Back to Dashboard</a>
+    </div>
+    <div>
+        <div>
+            <!-- Try these different formats -->
+            <a th:href="@{/super-admin/}">Back to Dashboard</a>
+            <!-- or -->
+            <a href="/super-admin">Back to Dashboard</a>
+            <!-- or -->
+            <a th:href="@{/super-admin}">Back to Dashboard</a>
+        </div>
     </div>
     
     <table border="1">
@@ -26,7 +33,7 @@
                 <th>Route Number</th>
                 <th>Start Location</th>
                 <th>End Location</th>
-                <th>Departure Time</th> <!-- Added new column for Departure Time -->
+                <th>Departure Time</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -35,14 +42,16 @@
                 <td th:text="${route.routeNumber}"></td>
                 <td th:text="${route.startLocation}"></td>
                 <td th:text="${route.endLocation}"></td>
-                <td th:text="${route.departureTime != null ? #dates.format(route.departureTime, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
+                <td th:text="${route.departureTime}"></td>
                 <td>
-                    <a th:href="@{'/super-admin/edit-route/' + ${route.id}}">Edit</a> | 
-                    <a th:href="@{'/super-admin/delete-route/' + ${route.id}}"
-                    onclick="return confirm('Are you sure you want to delete this route?');">Delete</a>
-                </td>
+                    <a th:href="@{/super-admin/edit-route/{id}(id=${route.id})}">Edit Route</a> | 
+                    <a th:href="@{/super-admin/edit-route/{id}(id=${route.id})}">Change Time</a> |
+                    <a th:href="@{/super-admin/delete-route/{id}(id=${route.id})}"
+                       onclick="return confirm('Are you sure you want to delete this route?');">Delete</a>
+                </td>                
             </tr>
         </tbody>
     </table>
+    
 </body>
 </html>

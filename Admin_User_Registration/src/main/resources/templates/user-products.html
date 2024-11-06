@@ -1,0 +1,12 @@
+<div th:each="product : ${products}">
+    <div class="card">
+        <img th:src="${product.imageUrl}" alt="Product Image">
+        <h3 th:text="${product.name}"></h3>
+        <p th:text="'Description: ' + ${product.description}"></p>
+        <p th:text="'Price: $' + ${product.price}"></p>
+        <p th:text="'Quantity: ' + ${product.quantity}"></p>
+        <form th:action="@{/user/purchase/{id}(id=${product.id})}" method="post">
+            <button type="submit" th:disabled="${product.quantity == 0}">Buy</button>
+        </form>
+    </div>
+</div>
