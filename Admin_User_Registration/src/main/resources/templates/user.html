@@ -1,5 +1,5 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,12 +70,16 @@
             background-color: #3498db;
         }
 
+        .card p {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>USER Dashboard</h1>
+        <h1>User Dashboard</h1>
     </div>
+
     <div class="container">
         <h2>Welcome, [[${user.getFullname()}]]</h2>
         
@@ -85,138 +89,23 @@
             </form>
         </span>
 
+        <h2>Available Bus Routes</h2>
         
-        <div class="card">
-            <img src="path/to/image1.jpg" alt="Product 1">
-            <h3>First Product</h3>
-            <p>Product 1 description goes here.</p>
-            <button>Add To Cart</button>
+        <!-- Loop through the bus routes and display each route -->
+        <div th:each="route : ${routes}" class="card">
+            <h3 th:text="${route.routeNumber}">Route Number</h3>
+            <p th:text="'Start Location: ' + ${route.startLocation}">Start Location</p>
+            <p th:text="'End Location: ' + ${route.endLocation}">End Location</p>
+            <p th:text="'Departure Time: ' + ${route.departureTime}">Departure Time</p>
+            <p th:text="'Available Seats: ' + ${route.availableSeats}">Available Seats</p>
+
+            <!-- Form to book the bus route -->
+            <form th:action="@{/user/book/{id}(id=${route.id})}" method="post">
+                <input type="number" name="seats" min="1" max="10" placeholder="Number of Seats" required>
+                <button type="submit" th:disabled="${route.availableSeats == 0}">Book Now</button>
+            </form>
         </div>
 
-        <div class="card">
-            <img src="path/to/image2.jpg" alt="Product 2">
-            <h3>Second Product</h3>
-            <p>Product 2 description goes here.</p>
-            <button>Add To Cart</button>
-        </div>
-
-        <div class="card">
-            <img src="path/to/image3.jpg" alt="Product 3">
-            <h3>Third Product</h3>
-            <p>Product 3 description goes here.</p>
-            <button>Add To Cart</button>
-        </div>
-
-        
     </div>
 </body>
 </html>
-     -->
-
-
-     <!DOCTYPE html>
-     <html lang="en" xmlns:th="http://www.thymeleaf.org">
-     <head>
-         <meta charset="UTF-8">
-         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-         <title>User Dashboard</title>
-         <style>
-             body {
-                 font-family: Arial, sans-serif;
-                 background-color: #0e2433;
-                 color: white;
-                 margin: 0;
-                 padding: 0;
-             }
-     
-             .header {
-                 background-color: #45b6fe;
-                 padding: 20px;
-                 text-align: center;
-             }
-     
-             .header h1 {
-                 margin: 0;
-             }
-     
-             .container {
-                 max-width: 1200px;
-                 margin: 20px auto;
-                 padding: 20px;
-                 background-color: #0e2433;
-                 border-radius: 5px;
-                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-                 display: flex;
-                 flex-wrap: wrap;
-                 gap: 20px;
-                 justify-content: center;
-             }
-     
-             h2 {
-                 color: #45b6fe;
-             }
-     
-             .card {
-                 background-color: #388ac1;
-                 border-radius: 5px;
-                 box-shadow: 0 0 10px rgba(160, 10, 10, 0.2);
-                 padding: 20px;
-                 margin-top: 20px;
-                 width: 300px;
-                 text-align: center;
-             }
-     
-             .card img {
-                 width: 100%;
-                 height: auto;
-                 border-radius: 5px;
-                 margin-bottom: 10px;
-             }
-     
-             .card button {
-                 background-color: #45b6fe;
-                 border: none;
-                 color: white;
-                 padding: 10px;
-                 border-radius: 5px;
-                 cursor: pointer;
-             }
-     
-             .card button:hover {
-                 background-color: #3498db;
-             }
-         </style>
-     </head>
-     <body>
-         <div class="header">
-             <h1>User Dashboard</h1>
-         </div>
-         <div class="container">
-             <h2>Welcome, [[${user.getFullname()}]]</h2>
-             
-             <span sec:authorize="isAuthenticated">
-                 <form th:action="@{/logout}" method="post">
-                     <button type="submit" style="background-color: #45b6fe; border-radius: 10px;">Logout</button>
-                 </form>
-             </span>
-     
-             <h1>Available Products</h1>
-             
-             <!-- Loop through the products and display each product -->
-             <div th:each="product : ${products}" class="card">
-                 <img th:src="@{'/images/' + ${product.image}}" alt="Product Image">
-                 <h3 th:text="${product.name}">Product Name</h3>
-                 <p th:text="'Description: ' + ${product.description}">Product description</p>
-                 <p th:text="'Price: $' + ${product.price}">Price</p>
-                 <p th:text="'Quantity: ' + ${product.quantity}">Quantity</p>
-                 
-                 <!-- Button to view the product or add to cart -->
-                 <form th:action="@{/user/purchase/{id}(id=${product.id})}" method="post">
-                     <button type="submit" th:disabled="${product.quantity == 0}">Buy</button>
-                 </form>
-             </div>
-     
-         </div>
-     </body>
-     </html>
-     

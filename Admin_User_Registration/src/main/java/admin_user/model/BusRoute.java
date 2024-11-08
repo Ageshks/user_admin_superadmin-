@@ -13,20 +13,26 @@ public class BusRoute {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     private String routeNumber;
     private String startLocation;
     private String endLocation;
     private LocalTime departureTime;
+    
+    // New fields for seats
+    private int totalSeats;  // Total number of seats available
+    private int availableSeats;  // Number of seats that are still available
 
     public BusRoute() {}
 
-    // Added departureTime parameter to the constructor
-    public BusRoute(String routeNumber, String startLocation, String endLocation, LocalTime departureTime) {
+    // Constructor with seats
+    public BusRoute(String routeNumber, String startLocation, String endLocation, LocalTime departureTime, int totalSeats) {
         this.routeNumber = routeNumber;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.departureTime = departureTime;
+        this.totalSeats = totalSeats;
+        this.availableSeats = totalSeats;  // Initially, available seats are the same as total seats
     }
 
     public Long getId() {
@@ -69,5 +75,21 @@ public class BusRoute {
         this.departureTime = departureTime;
     }
 
-    
+    // Getter and setter for totalSeats
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+
+    public void setTotalSeats(int totalSeats) {
+        this.totalSeats = totalSeats;
+    }
+
+    // Getter and setter for availableSeats
+    public int getAvailableSeats() {
+        return availableSeats;
+    }
+
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
+    }
 }
