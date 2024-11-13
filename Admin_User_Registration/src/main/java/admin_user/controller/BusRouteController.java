@@ -60,21 +60,28 @@ public class BusRouteController {
         model.addAttribute("busRoute", busRoute);
         return "edit-route";
     }
+// Update Bus Route Action
+@PostMapping("/super-admin/edit-route/{id}")
+@PreAuthorize("hasRole('SUPER_ADMIN')")
+public String updateRoute(@PathVariable Long id, @ModelAttribute("busRoute") BusRoute busRoute) {
+    BusRoute existingRoute = busRouteService.getRouteById(id);
+    if (existingRoute != null) {
+        existingRoute.setRouteNumber(busRoute.getRouteNumber());
+        existingRoute.setStartLocation(busRoute.getStartLocation());
+        existingRoute.setEndLocation(busRoute.getEndLocation());
+        existingRoute.setDepartureTime(busRoute.getDepartureTime());
+        existingRoute.setTotalSeats(busRoute.getTotalSeats());
+        existingRoute.setPricePerSeat(busRoute.getPricePerSeat());
+        
+        // Adjust available seats if total seats change
+        int seatDifference = busRoute.getTotalSeats() - existingRoute.getTotalSeats();
+        existingRoute.setAvailableSeats(existingRoute.getAvailableSeats() + seatDifference);
 
-    // Update Bus Route Action
-    @PostMapping("/super-admin/edit-route/{id}")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public String updateRoute(@PathVariable Long id, @ModelAttribute("busRoute") BusRoute busRoute) {
-        BusRoute existingRoute = busRouteService.getRouteById(id);
-        if (existingRoute != null) {
-            existingRoute.setRouteNumber(busRoute.getRouteNumber());
-            existingRoute.setStartLocation(busRoute.getStartLocation());
-            existingRoute.setEndLocation(busRoute.getEndLocation());
-            existingRoute.setDepartureTime(busRoute.getDepartureTime());
-            busRouteService.updateBusRoute(existingRoute);
-        }
-        return "redirect:/super-admin/view-routes";
+        busRouteService.updateBusRoute(existingRoute);
     }
+    return "redirect:/super-admin/view-routes";
+}
+
 
     // Delete Bus Route
     @GetMapping("/super-admin/delete-route/{id}")
@@ -84,19 +91,12 @@ public class BusRouteController {
         return "redirect:/super-admin/view-routes";
     }
 
-    // Super Admin Dashboard
-    @GetMapping("/super-admin")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public String getDashboardPage(Model model) {
-        return "redirect:/super-admin.html";
-    }
-
     // User Dashboard
     @GetMapping("/user/dashboard")
     public String userDashboard(Model model) {
-        List<BusRoute> routes = busRouteService.getAllRoutes(); // Display all routes for the user
+        List<BusRoute> routes = busRouteService.getAvailableRoutes(); // Only display routes with available seats
         model.addAttribute("routes", routes);
-        return "user-dashboard"; // Thymeleaf template for user dashboard
+        return "user-dashboard";
     }
 
     // Book Bus Route
@@ -105,9 +105,53 @@ public class BusRouteController {
         BusRoute route = busRouteService.getRouteById(id);
         if (route != null && route.getAvailableSeats() >= seats) {
             bookingService.bookRoute(route, seats);
-            return "redirect:/user/dashboard"; // Redirect back to dashboard after booking
+            return "redirect:/user/dashboard";
         } else {
-            return "error"; // Handle error when not enough seats are available
+            return "error";
         }
     }
+
+
+     // Step 1: Initiate Payment
+     @PostMapping("/user/initiate-booking/{id}")
+     public String initiateBooking(@PathVariable Long id, @RequestParam int seats, Model model) {
+         BusRoute route = busRouteService.getRouteById(id);
+         
+         if (route != null && route.getAvailableSeats() >= seats) {
+             // Redirect to payment gateway or initiate payment request
+             // Example: Create a payment request with payment gateway API
+             
+             // Add booking details to model for payment confirmation page
+             model.addAttribute("route", route);
+             model.addAttribute("seats", seats);
+             model.addAttribute("totalAmount", calculateTotalAmount(route, seats)); // Custom method to calculate amount
+ 
+             return "payment-page"; // This should be the view where payment is processed
+         } else {
+             model.addAttribute("error", "Not enough seats available.");
+             return "user-dashboard";
+         }
+     }
+ 
+     // Step 2: Complete Booking After Payment Confirmation
+     @PostMapping("/user/complete-booking")
+     public String completeBooking(
+             @RequestParam Long routeId,
+             @RequestParam int seats,
+             @RequestParam String paymentId, // Payment gateway-provided ID
+             Model model) {
+         
+         BusRoute route = busRouteService.getRouteById(routeId);
+ 
+         if (route != null && route.getAvailableSeats() >= seats) {
+             // Confirm payment status using payment gateway's API if needed
+ 
+             // Complete booking only if payment is successful
+             bookingService.bookRoute(route, seats, paymentId);
+             return "redirect:/user/dashboard";
+         } else {
+             model.addAttribute("error", "Booking failed due to insufficient seats or payment issue.");
+             return "payment-page";
+         }
+     }
 }

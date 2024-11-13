@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book Ticket</title>
+</head>
+<body>
+    <h2>Book Ticket</h2>
+
+    <!-- Error Message Display -->
+    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+
+    <!-- Booking Form -->
+    <form th:action="@{/user/bookings/book}" method="post">
+        <!-- Route ID (hidden) -->
+        <input type="hidden" name="routeId" th:value="${routeId}" />
+
+        <!-- Seat Selection -->
+        <label for="seats">Number of Seats:</label>
+        <input type="number" id="seats" name="seats" min="1" required />
+
+        <!-- Submit Button -->
+        <button type="submit">Book Now</button>
+    </form>
+
+    <!-- Back to Routes Button -->
+    <a th:href="@{/user/bookings/routes}">Back to Available Routes</a>
+</body>
+</html>

@@ -39,10 +39,8 @@ public class BusRouteServiceImpl implements BusRouteService {
         busRouteRepository.save(busRoute);
     }
     
-    // New method to get available routes
     @Override
     public List<BusRoute> getAvailableRoutes() {
-        // Assuming 'availableSeats' is a field in BusRoute entity
         return busRouteRepository.findByAvailableSeatsGreaterThan(0);
     }
 }

@@ -1,15 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Bus Route</title>
+    <style>
+        /* Add your styles here */
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="time"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #45b6fe;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3498db;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #45b6fe;
+        }
+    </style>
 </head>
 <body>
     <h1>Edit Bus Route</h1>
     
     <!-- Edit Bus Route Form -->
-    <form action="#" th:action="@{/super-admin/edit-route/{id}(id=${busRoute.id})}" th:object="${busRoute}" method="post">
+    <form th:action="@{/super-admin/edit-route/{id}(id=${busRoute.id})}" th:object="${busRoute}" method="post">
         <label for="routeNumber">Route Number:</label>
         <input type="text" id="routeNumber" th:field="*{routeNumber}" required/>
     
@@ -20,14 +68,22 @@
         <input type="text" id="endLocation" th:field="*{endLocation}" required/>
     
         <label for="departureTime">Departure Time:</label>
-        <input type="time" id="departureTime" th:field="*{departureTime}" required/> <!-- New input for time -->
+        <input type="time" id="departureTime" th:field="*{departureTime}" required/>
+        
+        <label for="totalSeats">Total Seats:</label>
+        <input type="number" id="totalSeats" th:field="*{totalSeats}" min="1" required/>
+        
+        <label for="availableSeats">Available Seats:</label>
+        <input type="number" id="availableSeats" th:field="*{availableSeats}" min="0" required/>
+        
+        <label for="availableSeats">pricePerSeat:</label>
+        <input type="number" id="pricePerSeat" th:field="*{pricePerSeat}" min="0" required/>
     
         <button type="submit">Update Route</button>
     </form>
     
-
     <!-- Link to return to the routes page -->
-    <div>
+    <div class="back-link">
         <a th:href="@{/super-admin/view-routes}">Back to Routes</a>
     </div>
 </body>

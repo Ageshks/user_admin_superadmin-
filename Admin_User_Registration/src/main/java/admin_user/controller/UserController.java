@@ -2,6 +2,7 @@ package admin_user.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import admin_user.dto.UserDto;
 import admin_user.model.BusRoute;
 import admin_user.model.User;
 import admin_user.repositories.UserRepository;
+import admin_user.service.BookingService;
 import admin_user.service.BusRouteService;
 import admin_user.service.UserService;
 
@@ -115,12 +118,71 @@ public String superAdminPage(Model model, Principal principal) {
 
 
 
-	@GetMapping("user-page")
-	public String userPage (Model model, Principal principal) {
-		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-		model.addAttribute("user", userDetails);
-		return "user";
-	}
+@GetMapping("/user-page")
+public String userPage(Model model, Principal principal) {
+	UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+	model.addAttribute("user", userDetails);
+
+	List<BusRoute> routes = busRouteService.getAllRoutes();
+	model.addAttribute("routes", routes);
+
+	return "user";
+}
+
+@GetMapping("/user-page/search")
+public String searchRoutes(@RequestParam("startLocation") String startLocation, 
+                           @RequestParam(value = "endLocation", required = false) String endLocation, 
+                           Model model, Principal principal) {
+    // Fetch all routes and filter by start and end location if provided
+    List<BusRoute> filteredRoutes = busRouteService.getAllRoutes().stream()
+        .filter(route -> route.getStartLocation().equalsIgnoreCase(startLocation))
+        .filter(route -> endLocation == null || route.getEndLocation().equalsIgnoreCase(endLocation))
+        .collect(Collectors.toList());
+
+    // Add the filtered routes to the model
+    model.addAttribute("routes", filteredRoutes);
+
+    // Ensure logged-in user details are passed to `user.html`
+    UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+    model.addAttribute("user", userDetails);
+
+    return "user"; // Ensure "user.html" displays `routes`
+}
+
+
+
+@Autowired
+    private BookingService bookingService;
+
+    // Book a bus route
+    @PostMapping("/user/book/{routeId}")
+public String bookBusRoute(@PathVariable("routeId") Long routeId,
+                           @RequestParam("seats") int seats,
+                           Model model,
+                           Principal principal) {
+    if (principal == null) {
+        model.addAttribute("message", "User not logged in!");
+        return "error";
+    }
+    UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+    if (userDetails == null) {
+        model.addAttribute("message", "User details not found!");
+        return "error";
+    }
+    String userEmail = userDetails.getUsername();
+
+	boolean isBooked = bookingService.bookTicket(routeId, userEmail, seats) != null;
+
+    if (isBooked) {
+        model.addAttribute("message", "Booking Successful!");
+    } else {
+        model.addAttribute("message", "Booking failed. Not enough seats available.");
+    }
+
+    return "user";
+}
+
+
 
 	@GetMapping("/admin-page")
 	public String adminPage(Model model, Principal principal) {

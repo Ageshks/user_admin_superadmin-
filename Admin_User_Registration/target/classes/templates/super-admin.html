@@ -120,7 +120,7 @@
             <a th:href="@{/super-admin/add-route}">Add New Bus Route</a>
         </div>
         <div class="login-btn">
-            <a th:href="@{/super-admin/view-routes}">View Routes</a>
+            <a th:href="@{/super-admin/view-routes}">Edit Routes</a>
         </div>
         <table border="1">
             <thead>
@@ -129,6 +129,8 @@
                     <th>Start Location</th>
                     <th>End Location</th>
                     <th>Time</th>
+                    <th>availableSeats</th>
+                    <th>pricePerSeat</th>
                 </tr>
             </thead>
             <tbody>
@@ -137,42 +139,14 @@
                     <td th:text="${route.startLocation}"></td>
                     <td th:text="${route.endLocation}"></td>
                     <td th:text="${route.departureTime}"></td>
+                    <td th:text="${route.availableSeats}"></td>
+                    <td th:text="${route.pricePerSeat}"></td>
                 </tr>
             </tbody>
         </table>
 
-        <h2>Products</h2>
-        <div class="login-btn">
-            <a th:href="@{/super-admin/products/add}">Add New Product</a>
-        </div>
-        <div class="login-btn">
-            <a th:href="@{/super-admin/products}">View Products</a>
-        </div>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Name</th>
-                    <th>Quantity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="product : ${products}">
-                    <td th:text="${product.id}"></td>
-                    <td th:text="${product.name}"></td>
-                    <td th:text="${product.quantity}"></td>
-                    <td>
-                        <form th:action="@{/super-admin/edit-product/{id}(id=${product.id})}" method="get">
-                            <button type="submit">Edit</button>
-                        </form>
-                        <form th:action="@{/super-admin/delete-product/{id}(id=${product.id})}" method="post">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        
+        
     </div>
 </body>
 </html>

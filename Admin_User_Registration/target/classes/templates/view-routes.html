@@ -34,6 +34,9 @@
                 <th>Start Location</th>
                 <th>End Location</th>
                 <th>Departure Time</th>
+                <th>availableSeats</th>
+                <th>totalseats</th>
+                <th>pricePerSeat</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -43,6 +46,9 @@
                 <td th:text="${route.startLocation}"></td>
                 <td th:text="${route.endLocation}"></td>
                 <td th:text="${route.departureTime}"></td>
+                <td th:text="${route.availableSeats}"></td>
+                <td th:text="${route.totalSeats}"></td>
+                <td th:text="${route.pricePerSeat}"></td>
                 <td>
                     <a th:href="@{/super-admin/edit-route/{id}(id=${route.id})}">Edit Route</a> | 
                     <a th:href="@{/super-admin/edit-route/{id}(id=${route.id})}">Change Time</a> |

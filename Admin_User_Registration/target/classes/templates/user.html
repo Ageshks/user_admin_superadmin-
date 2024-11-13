@@ -89,7 +89,13 @@
             </form>
         </span>
 
-        <h2>Available Bus Routes</h2>
+        <h1>Available Bus Routes</h1>
+
+        <form action="/user-page/search" method="get">
+            <input type="text" name="startLocation" placeholder="Start Location" required>
+            <input type="text" name="endLocation" placeholder="End Location">
+            <button type="submit">Search</button>
+        </form>
         
         <!-- Loop through the bus routes and display each route -->
         <div th:each="route : ${routes}" class="card">
@@ -98,14 +104,44 @@
             <p th:text="'End Location: ' + ${route.endLocation}">End Location</p>
             <p th:text="'Departure Time: ' + ${route.departureTime}">Departure Time</p>
             <p th:text="'Available Seats: ' + ${route.availableSeats}">Available Seats</p>
-
-            <!-- Form to book the bus route -->
-            <form th:action="@{/user/book/{id}(id=${route.id})}" method="post">
-                <input type="number" name="seats" min="1" max="10" placeholder="Number of Seats" required>
-                <button type="submit" th:disabled="${route.availableSeats == 0}">Book Now</button>
-            </form>
+        
+            <!-- Button to navigate to the booking form for the selected route -->
+            <a th:href="@{/user/bookings/book/{routeId}(routeId=${route.id})}">
+                <button th:disabled="${route.availableSeats == 0}">Book Now</button>
+            </a>
         </div>
 
+        
+    
+    <!-- Display success or error message -->
+    <div th:if="${message}" style="color: green;">
+        <p th:text="${message}"></p>
     </div>
+    <div th:if="${error}" style="color: red;">
+        <p th:text="${error}"></p>
+    </div>
+
+    <h2>Your Bookings</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Route</th>
+            <th>Seats</th>
+            <th>Booking Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.busRoute.startLocation} + ' to ' + ${booking.busRoute.endLocation}"></td>
+            <td th:text="${booking.seats}"></td>
+            <td th:text="${booking.bookingDate}"></td>
+        </tr>
+    </tbody>
+</table>
+
+    
+
+    </div>
+    
 </body>
 </html>
