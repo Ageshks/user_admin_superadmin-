@@ -12,21 +12,19 @@ import jakarta.persistence.ManyToOne;
 public class Booking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Use IDENTITY for auto-increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
     private Long id;
 
     @ManyToOne
-    private BusRoute route;  // Many bookings can be associated with one bus route
+    private BusRoute route;  
 
     private String userEmail;
     private int seats;
     private LocalDateTime bookingTime;
     private String paymentId;
 
-    // Default constructor
     public Booking() {}
 
-    // Constructor with all fields including paymentId
     public Booking(BusRoute route, String userEmail, int seats, LocalDateTime bookingTime, String paymentId) {
         this.route = route;
         this.userEmail = userEmail;
@@ -35,7 +33,6 @@ public class Booking {
         this.paymentId = paymentId;
     }
 
-    // Constructor without paymentId
     public Booking(BusRoute route, String userEmail, int seats, LocalDateTime bookingTime) {
         this.route = route;
         this.userEmail = userEmail;
@@ -43,7 +40,6 @@ public class Booking {
         this.bookingTime = bookingTime;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

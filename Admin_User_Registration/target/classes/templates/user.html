@@ -104,7 +104,8 @@
             <p th:text="'End Location: ' + ${route.endLocation}">End Location</p>
             <p th:text="'Departure Time: ' + ${route.departureTime}">Departure Time</p>
             <p th:text="'Available Seats: ' + ${route.availableSeats}">Available Seats</p>
-        
+            <p th:text="'price: ' + ${route.pricePerSeat}">pricePerSeat</p>
+            
             <!-- Button to navigate to the booking form for the selected route -->
             <a th:href="@{/user/bookings/book/{routeId}(routeId=${route.id})}">
                 <button th:disabled="${route.availableSeats == 0}">Book Now</button>

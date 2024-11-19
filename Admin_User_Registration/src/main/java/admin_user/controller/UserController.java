@@ -65,15 +65,12 @@ private BusRouteService busRouteService; // Inject the BusRouteService
 @GetMapping("/super-admin-page")
 @PreAuthorize("hasrole('ROLE_SUPER-ADMIN')")
 public String superAdminPage(Model model, Principal principal) {
-    // Get the logged-in super admin details
     UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
     model.addAttribute("adminUser", userDetails);
 
-    // Fetch the super admin's details from the repository
     User superAdmin = userRepository.findByEmail(userDetails.getUsername());
     model.addAttribute("user", superAdmin); // Add super admin details to the model
 
-    // Fetch all users, excluding the current logged-in super admin
     List<User> users = userRepository.findAll()
         .stream()
         .filter(user -> !user.getEmail().equals(superAdmin.getEmail())) // Exclude the super admin
@@ -82,7 +79,6 @@ public String superAdminPage(Model model, Principal principal) {
     model.addAttribute("users", users);
 
 	model.addAttribute("user", superAdmin);
-    // Fetch all bus routes and add to the model
     List<BusRoute> routes = busRouteService.getAllRoutes(); // Adjusted to use the injected service
     model.addAttribute("routes", routes);
 
@@ -133,16 +129,13 @@ public String userPage(Model model, Principal principal) {
 public String searchRoutes(@RequestParam("startLocation") String startLocation, 
                            @RequestParam(value = "endLocation", required = false) String endLocation, 
                            Model model, Principal principal) {
-    // Fetch all routes and filter by start and end location if provided
     List<BusRoute> filteredRoutes = busRouteService.getAllRoutes().stream()
         .filter(route -> route.getStartLocation().equalsIgnoreCase(startLocation))
         .filter(route -> endLocation == null || route.getEndLocation().equalsIgnoreCase(endLocation))
         .collect(Collectors.toList());
 
-    // Add the filtered routes to the model
     model.addAttribute("routes", filteredRoutes);
 
-    // Ensure logged-in user details are passed to `user.html`
     UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
     model.addAttribute("user", userDetails);
 
@@ -154,7 +147,6 @@ public String searchRoutes(@RequestParam("startLocation") String startLocation,
 @Autowired
     private BookingService bookingService;
 
-    // Book a bus route
     @PostMapping("/user/book/{routeId}")
 public String bookBusRoute(@PathVariable("routeId") Long routeId,
                            @RequestParam("seats") int seats,
@@ -188,12 +180,10 @@ public String bookBusRoute(@PathVariable("routeId") Long routeId,
 	public String adminPage(Model model, Principal principal) {
 		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
 		
-    // Fetch user info from repository
     User user = userRepository.findByEmail(userDetails.getUsername());
     
 
 	model.addAttribute("adminUser", userDetails);
-    // Add user details to the model
     model.addAttribute("user", user);
 
 	List<User> users = userRepository.findByRole("USER");
