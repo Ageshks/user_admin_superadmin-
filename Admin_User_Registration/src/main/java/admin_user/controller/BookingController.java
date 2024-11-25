@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.stripe.Stripe;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
+
 import admin_user.service.BookingService;
 
 @Controller
@@ -25,54 +29,86 @@ public class BookingController {
     @GetMapping("/routes")
     public String viewAvailableRoutes(Model model) {
         model.addAttribute("routes", bookingService.getAllRoutes());
-        return "user-routes"; 
+        return "user-routes";
     }
 
     // Show booking form for a specific route
     @GetMapping("/book/{routeId}")
     public String showBookingForm(@PathVariable Long routeId, Model model) {
+        double pricePerSeat = bookingService.getPricePerSeat(routeId); // Fetch price per seat
         model.addAttribute("routeId", routeId);
-        return "book-ticket"; 
+        model.addAttribute("pricePerSeat", pricePerSeat);
+        model.addAttribute("STRIPE_PUBLISHABLE_KEY", "pk_test_51QLIbeGMcBpNczFEtp86Alaz0BKQCMbPOiMmY23RAGtZg25nian2Ok8GOze19yTUi721mF3237uutffQxekeJSh00RY7qHTnw");
+        return "book-ticket";
     }
 
-    // Book seats for a specific route
-    @PostMapping("/book")
-    public String bookTicket(
-        @RequestParam Long routeId,
-        @RequestParam int seats,
-        Principal principal,
-        RedirectAttributes redirectAttributes
+    // Handle payment for booking
+    @PostMapping("/pay")
+    public String payForBooking(
+            @RequestParam Long routeId,
+            @RequestParam int seats,
+            Principal principal,
+            RedirectAttributes redirectAttributes
     ) {
         try {
-            // Get the logged-in user's email
-            String userEmail = principal.getName();
-            
-            // Attempt to book the seats
-            bookingService.bookSeats(routeId, userEmail, seats);
+            String userEmail = principal.getName(); // Get user's email
+            double totalAmount = bookingService.calculateTotalAmount(routeId, seats); // Calculate total amount
 
-            // Add a success message to be displayed on the redirected page
-            redirectAttributes.addFlashAttribute("message", "Booking successful!");
+            // Set Stripe secret key (use environment variables in production)
+            Stripe.apiKey = "sk_test_51QLIbeGMcBpNczFvGfV2wOAKm4hY3Ehr9C7ObeR1hpFAJD0Ds7XACcc1gUBcMv8XO7lLARCPDEtzdrXXPhbb8J5300Wr5IzmEo";
+
+            // Create a Stripe payment session
+            SessionCreateParams params = SessionCreateParams.builder()
+                    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                    .setMode(SessionCreateParams.Mode.PAYMENT)
+                    .setSuccessUrl("http://localhost:8080/user/bookings/success")
+                    .setCancelUrl("http://localhost:8080/user/bookings/cancel")
+                    .addLineItem(
+                            SessionCreateParams.LineItem.builder()
+                                    .setQuantity(1L)
+                                    .setPriceData(
+                                            SessionCreateParams.LineItem.PriceData.builder()
+                                                    .setCurrency("usd")
+                                                    .setUnitAmount((long) (totalAmount * 100)) // Amount in cents
+                                                    .setProductData(
+                                                            SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                    .setName("Bus Ticket Booking - Route ID: " + routeId)
+                                                                    .build()
+                                                    )
+                                                    .build()
+                                    )
+                                    .build()
+                    )
+                    .build();
+
+            Session session = Session.create(params);
+
+            // Redirect to Stripe payment page
+            return "redirect:" + session.getUrl();
         } catch (Exception e) {
-            // Add error message to redirect attributes
-            redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());
-            return "redirect:/user/bookings/book/" + routeId; // Redirect back to booking form with error
+            redirectAttributes.addFlashAttribute("error", "Payment failed: " + e.getMessage());
+            return "redirect:/user/bookings/book/" + routeId;
         }
+    }
 
-        return "redirect:/user/bookings/view"; // Redirect to bookings view
+    // Payment success handler
+    @GetMapping("/success")
+    public String paymentSuccess(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message", "Payment successful! Your booking has been confirmed.");
+        return "redirect:/user/bookings/view";
+    }
+
+    // Payment cancel handler
+    @GetMapping("/cancel")
+    public String paymentCancelled(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("error", "Payment was canceled. Please try again.");
+        return "redirect:/user/bookings/view";
     }
 
     // View all bookings for the logged-in user
     @GetMapping("/view")
     public String viewBookings(Model model, Principal principal) {
-        // Get the bookings for the logged-in user
         model.addAttribute("bookings", bookingService.getBookingsByUser(principal.getName()));
-        return "user-bookings"; 
-    }
-
-    // Add a route to the cart for later booking (optional feature)
-    @GetMapping("/add-to-cart/{routeId}")
-    public String addToCart(@PathVariable Long routeId, Principal principal) {
-        // Implement a cart system if required
-        return "redirect:/user/bookings/routes"; // Redirect back to routes page
+        return "user-bookings";
     }
 }

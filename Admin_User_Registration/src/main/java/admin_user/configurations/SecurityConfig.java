@@ -39,7 +39,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     .authorizeHttpRequests(request -> request
             .requestMatchers("/superadmin-page").hasAuthority("SUPER_ADMIN")  // Super Admin page access
             .requestMatchers("/admin-page").hasAuthority("ADMIN")              // Admin page access
-            .requestMatchers("/user-page").hasAuthority("USER")                // User page access
+            .requestMatchers("/user-page").hasAuthority("USER")   
+            .requestMatchers("/user/bookings/pay").hasAuthority("USER")             // User page access
             .requestMatchers("/registration", "/css/**").permitAll()           // Permit registration and CSS files
             .anyRequest().authenticated())                                     // Other requests must be authenticated
     

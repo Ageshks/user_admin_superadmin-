@@ -2,68 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Book Ticket</title>
-    <script src="https://js.stripe.com/v3/"></script> <!-- Stripe script -->
 </head>
 <body>
-    <h2>Book Ticket</h2>
-
-    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
-
-    <form id="booking-form">
-        <input type="hidden" id="routeId" name="routeId" th:value="${routeId}" />
-        <label for="seats">Number of Seats:</label>
-        <input type="number" id="seats" name="seats" min="1" required />
-        <p>Price per Seat: <span th:text="${pricePerSeat}"></span> USD</p>
-        <p>Total Amount: <span id="totalAmount">0</span> USD</p>
-        <button type="button" id="proceedToPayment">Proceed to Payment</button>
+    <h2>Book Your Ticket</h2>
+    
+    <!-- Important: Check the form action URL -->
+    <form th:action="@{/user/bookings/pay}" method="post">
+        <!-- Critical: This hidden input must be present -->
+        <input type="hidden" name="routeId" th:value="${routeId}" />
+        
+        <div>
+            <label for="seats">Number of Seats:</label>
+            <input type="number" id="seats" name="seats" min="1" required />
+        </div>
+        
+        <div>
+            <label>Price per seat: $</label>
+            <span th:text="${pricePerSeat}">0.00</span>
+        </div>
+        
+        <button type="submit">Proceed to Payment</button>
     </form>
-
-    <a th:href="@{/user/dashboard}">Back to Available Routes</a>
-
-    <script>
-        const stripe = Stripe("pk_test_51QLIbeGMcBpNczFvEtp86Alaz0BKQCMbPOiMmY23RAGtZg25nian2Ok8GOze19yTUi721mF3237uutffQxekeJSh00RY7qHTnw"); // Replace with your Stripe publishable key
-        const pricePerSeat = /*[[${pricePerSeat}]]*/ 10; // Backend-provided price
-        const totalAmountElement = document.getElementById("totalAmount");
-        const seatsInput = document.getElementById("seats");
-        const routeId = document.getElementById("routeId").value;
-
-        // Update total amount dynamically
-        seatsInput.addEventListener("input", function () {
-            const seats = parseInt(this.value, 10) || 0;
-            const totalAmount = seats * pricePerSeat;
-            totalAmountElement.textContent = totalAmount.toFixed(2);
-        });
-
-        document.getElementById("proceedToPayment").addEventListener("click", async function () {
-            const seats = parseInt(seatsInput.value, 10) || 0;
-            if (seats < 1) {
-                alert("Please select at least one seat.");
-                return;
-            }
-
-            const totalAmount = seats * pricePerSeat;
-
-            try {
-                // Call the backend to create a Stripe session
-                const response = await fetch("/user/bookings/pay", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ routeId, amount: totalAmount }),
-                });
-
-                const data = await response.json();
-                if (data.sessionUrl) {
-                    window.location.href = data.sessionUrl; // Redirect to Stripe Checkout
-                } else {
-                    alert("Failed to initiate payment. Please try again.");
-                }
-            } catch (error) {
-                console.error("Error initiating payment:", error);
-                alert("An error occurred. Please try again later.");
-            }
-        });
-    </script>
 </body>
 </html>

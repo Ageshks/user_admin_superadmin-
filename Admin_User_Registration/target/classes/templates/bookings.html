@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bookings</title>
+</head>
+<body>
+    <h1>Your Bookings</h1>
+
+    <div th:if="${bookings}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Route</th>
+                    <th>Seats</th>
+                    <th>Booking Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="booking : ${bookings}">
+                    <td th:text="${booking.route.startLocation} + ' to ' + ${booking.route.endLocation}"></td>
+                    <td th:text="${booking.seats}"></td>
+                    <td th:text="${booking.bookingTime}"></td>
+                    <td><a th:href="@{/user/bookings/pay/{routeId}(routeId=${booking.route.id})}">Pay</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${not bookings}">
+        <p>No bookings found.</p>
+    </div>
+</body>
+</html>

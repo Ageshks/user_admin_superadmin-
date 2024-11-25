@@ -1,2 +1,2 @@
-- added the pages for thebus routes and bus time
-- but the issue is when we are loading the view route page error is popping due to the diparturetime that i added
+# Admin_User_Registration_Login_Spring_Boot_Application
+Admin and User Registration Using Spring Boot
