@@ -3,3 +3,4 @@
 - superadmin registration
 - role-base login
 - admin can manage users
+- super admin can manage both admin and users 
