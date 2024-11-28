@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Routes</title>
+</head>
+<body>
+    <h1>Bus Routes</h1>
+    
+    <div class="login-btn">
+        <a class="btn" th:href="@{/super-admin/add-route}">
+            <p style="color: red;">Add New Route</p>
+        </a>
+    </div>
+    <div>
+        <a th:href="@{/super-admin-page}">Back to Dashboard</a>
+    </div>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Route Number</th>
+                <th>Start Location</th>
+                <th>End Location</th>
+                <th>Departure Time</th>
+                <th>availableSeats</th>
+                <th>totalseats</th>
+                <th>pricePerSeat</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="route : ${routes}">
+                <td th:text="${route.routeNumber}"></td>
+                <td th:text="${route.startLocation}"></td>
+                <td th:text="${route.endLocation}"></td>
+                <td th:text="${route.departureTime}"></td>
+                <td th:text="${route.availableSeats}"></td>
+                <td th:text="${route.totalSeats}"></td>
+                <td th:text="${route.pricePerSeat}"></td>
+                <td>
+                    <a th:href="@{/super-admin/edit-route/{id}(id=${route.id})}">Edit Route</a> | 
+                    <a th:href="@{/super-admin/edit-route/{id}(id=${route.id})}">Change Time</a> |
+                    <a th:href="@{/super-admin/delete-route/{id}(id=${route.id})}"
+                       onclick="return confirm('Are you sure you want to delete this route?');">Delete</a>
+                </td>                
+            </tr>
+        </tbody>
+    </table>
+    
+</body>
+</html>

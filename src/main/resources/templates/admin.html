@@ -1,0 +1,107 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0e2433;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #45b6fe;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #0e2433;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #45b6fe;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ADMIN Dashboard</h1>
+    </div>
+
+    <div class="container">
+        <!-- Display welcome message with the user's full name -->
+        <h2>Welcome, [[${user.fullname}]]</h2>
+
+        <!-- Logout button (ensure Spring Security config is in place) -->
+        <span sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" style="background-color: #45b6fe; border-radius: 10px;">Logout</button>
+            </form>
+        </span>
+
+        <h2>Users List</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Modify </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Iterate over the users list -->
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.fullname}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td>
+                        <form th:action="@{/admin/delete-user/{id}(id=${user.id})}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                                    </tr>
+                
+            </tbody>
+        </table>
+
+
+        <h2>Bus Routes</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Route Number</th>
+            <th>Start Location</th>
+            <th>End Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="route : ${routes}">
+            <td th:text="${route.routeNumber}"></td>
+            <td th:text="${route.startLocation}"></td>
+            <td th:text="${route.endLocation}"></td>
+        </tr>
+    </tbody>
+</table>
+    </div>
+
+    
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Your Bookings</title>
+</head>
+<body>
+    <h1>Your Bookings</h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Route ID</th>
+                    <th>Seats</th>
+                    <th>Total Amount</th>
+                    <th>Booking Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="booking : ${bookings}">
+                    <td th:text="${booking.id}"></td>
+                    <td th:text="${booking.routeId}"></td>
+                    <td th:text="${booking.seats}"></td>
+                    <td th:text="${booking.totalAmount}"></td>
+                    <td th:text="${#dates.format(booking.bookingTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="#" th:action="@{/super-admin/add-route}" th:object="${busRoute}" method="post">
+        <label for="routeNumber">Route Number:</label>
+        <input type="text" id="routeNumber" th:field="*{routeNumber}" required/>
+    
+        <label for="startLocation">Start Location:</label>
+        <input type="text" id="startLocation" th:field="*{startLocation}" required/>
+    
+        <label for="endLocation">End Location:</label>
+        <input type="text" id="endLocation" th:field="*{endLocation}" required/>
+    
+        <label for="departureTime">Departure Time:</label>
+        <input type="time" id="departureTime" th:field="*{departureTime}" required/> New input for time
+    
+        <button type="submit">Add Route</button>
+    </form>
+    <div>
+        <a th:href="@{/super-admin/view-routes}">Back to Routes</a>
+    </div>
+    <div>
+        <a th:href="@{/super-admin/}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

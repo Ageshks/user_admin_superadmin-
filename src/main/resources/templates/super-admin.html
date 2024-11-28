@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0e2433;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #45b6fe;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #0e2433;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #45b6fe;
+        }
+
+        .login-btn a {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #45b6fe;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #45b6fe;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #45b6fe;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SUPER ADMIN Dashboard</h1>
+    </div>
+    <div class="container">
+        <h2>Welcome, [[${user.getFullname()}]]</h2>
+        
+        <span sec:authorize="isAuthenticated">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" style="background-color: #45b6fe; border-radius: 10px;">Logout</button>
+            </form>
+        </span>
+
+        <h2>USERS AND ADMINS</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Modify</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">1</td>
+                    <td th:text="${user.fullname}">John Doe</td>
+                    <td th:text="${user.email}">john.doe@example.com</td>
+                    <td th:text="${user.role}">USER</td>
+                    <td>
+                        <form th:action="@{/super-admin/change-role/{id}(id=${user.id})}" method="post">
+                            <select name="role">
+                                <option value="USER" th:selected="${user.role == 'USER'}">USER</option>
+                                <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">ADMIN</option>
+                                <option value="SUPER_ADMIN" th:selected="${user.role == 'SUPER_ADMIN'}">SUPER ADMIN</option>
+                            </select>
+                            <button type="submit">Change Role</button>
+                            <form th:action="@{/super-admin/delete-user/{id}(id=${user.id})}" method="post">
+                                <button type="submit">Delete</button>
+                            </form>
+                        
+                        </form>
+
+                        
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Bus Routes</h2>
+        <div class="login-btn">
+            <a th:href="@{/super-admin/add-route}">Add New Bus Route</a>
+        </div>
+        <div class="login-btn">
+            <a th:href="@{/super-admin/view-routes}">Edit Routes</a>
+        </div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Route Number</th>
+                    <th>Start Location</th>
+                    <th>End Location</th>
+                    <th>Time</th>
+                    <th>availableSeats</th>
+                    <th>pricePerSeat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="route : ${routes}">
+                    <td th:text="${route.routeNumber}"></td>
+                    <td th:text="${route.startLocation}"></td>
+                    <td th:text="${route.endLocation}"></td>
+                    <td th:text="${route.departureTime}"></td>
+                    <td th:text="${route.availableSeats}"></td>
+                    <td th:text="${route.pricePerSeat}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        
+        
+    </div>
+</body>
+</html>
