@@ -16,7 +16,7 @@ import admin_user.model.Notification;
 import admin_user.service.NotificationService;
 
 @RestController
-@RequestMapping("/api/notifications")
+@RequestMapping("/user/notifications")
 public class NotificationController {
     @Autowired
     private NotificationService notificationService;

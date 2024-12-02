@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Chat System</title>
+</head>
+<body>
+    <h1>Support Chat System</h1>
+
+    <!-- Create Support Ticket Form -->
+    <h2>Create Support Ticket</h2>
+    <form action="/support-chat/create" method="post">
+        <label for="userId">User ID:</label>
+        <input type="number" id="userId" name="userId" required><br>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required><br>
+
+        <label for="initialMessage">Initial Message:</label>
+        <textarea id="initialMessage" name="initialMessage" required></textarea><br>
+
+        <button type="submit">Create Ticket</button>
+    </form>
+
+    <hr>
+
+    <!-- Send Support Message Form -->
+    <h2>Send Support Message</h2>
+    <form action="/support-chat/message" method="post">
+        <label for="ticketId">Ticket ID:</label>
+        <input type="number" id="ticketId" name="ticketId" required><br>
+
+        <label for="senderId">Sender ID:</label>
+        <input type="number" id="senderId" name="senderId" required><br>
+
+        <label for="messageContent">Message Content:</label>
+        <textarea id="messageContent" name="messageContent" required></textarea><br>
+
+        <label for="messageType">Message Type:</label>
+        <select id="messageType" name="messageType" required>
+            <option value="TEXT">Text</option>
+            <option value="IMAGE">Image</option>
+            <option value="FILE">File</option>
+        </select><br>
+
+        <button type="submit">Send Message</button>
+    </form>
+
+    <hr>
+
+    <!-- Get User Support Tickets -->
+    <h2>View Support Tickets by User ID</h2>
+    <form action="/support-chat/tickets/" method="get">
+        <label for="userIdTickets">User ID:</label>
+        <input type="number" id="userIdTickets" name="userId" required><br>
+        <button type="submit">View Tickets</button>
+    </form>
+
+    <hr>
+
+    <!-- Get Support Ticket Details -->
+    <h2>View Support Ticket Details</h2>
+    <form action="/support-chat/ticket/" method="get">
+        <label for="ticketIdDetails">Ticket ID:</label>
+        <input type="number" id="ticketIdDetails" name="ticketId" required><br>
+        <button type="submit">View Details</button>
+    </form>
+
+    <hr>
+
+    <!-- Close Support Ticket -->
+    <h2>Close Support Ticket</h2>
+    <form action="/support-chat/ticket/close" method="post">
+        <label for="ticketIdClose">Ticket ID:</label>
+        <input type="number" id="ticketIdClose" name="ticketId" required><br>
+        <button type="submit">Close Ticket</button>
+    </form>
+
+</body>
+</html>
