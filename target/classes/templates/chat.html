@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat with Support</h1>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+
+    <script>
+        var socket = new SockJS('/ws'); // Connect to your WebSocket endpoint
+        var stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function (message) {
+                showMessage(JSON.parse(message.body).messageContent);
+            });
+        });
+
+        function sendMessage() {
+            var messageContent = document.getElementById('messageInput').value;
+            stompClient.send("/app/chat", {}, JSON.stringify({'messageContent': messageContent}));
+            document.getElementById('messageInput').value = '';
+        }
+
+        function showMessage(message) {
+            var messageElement = document.createElement('div');
+            messageElement.innerText = message;
+            document.getElementById('messages').appendChild(messageElement);
+        }
+    </script>
+</body>
+</html>
