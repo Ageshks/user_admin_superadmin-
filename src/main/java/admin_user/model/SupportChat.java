@@ -12,6 +12,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -22,20 +24,20 @@ public class SupportChat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "subject")
+    @Column(name = "subject", nullable = false)
     private String subject;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private TicketStatus status;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "supportChat")
     private List<Message> messages;
 
     public enum TicketStatus {
@@ -52,14 +54,18 @@ public class SupportChat {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(name = "sender_id")
+        @Column(name = "sender_id", nullable = false)
         private Long senderId;
 
-        @Column(name = "message_content")
+        @Column(name = "message_content", nullable = false)
         private String messageContent;
 
-        @Column(name = "sent_at")
+        @Column(name = "sent_at", nullable = false)
         private LocalDateTime sentAt;
+
+        @Enumerated(EnumType.STRING)
+        @Column(name = "message_type", nullable = false)
+        private MessageType messageType;
 
         public Long getId() {
             return id;
@@ -93,27 +99,35 @@ public class SupportChat {
             this.sentAt = sentAt;
         }
 
-        public void setMessageType(String messageType) {
+        public MessageType getMessageType() {
+            return messageType;
+        }
+
+        public void setMessageType(MessageType messageType) {
             this.messageType = messageType;
         }
 
-        @Column(name = "message_type")
-        private String messageType;
+        public SupportChat getSupportChat() {
+            return supportChat;
+        }
+
+        public void setSupportChat(SupportChat supportChat) {
+            this.supportChat = supportChat;
+        }
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "support_chat_id")
+        private SupportChat supportChat;
 
         public enum MessageType {
             USER, 
             SUPPORT_AGENT
         }
 
-        // Getters and setters
         
-        public String getMessageType() {
-            return messageType;
-        }
 
-        public void setMessageType(MessageType messageType) {
-            this.messageType = messageType.name();
-        }
+        // Getters and Setters
+        // ...
     }
 
     public Long getId() {
@@ -164,6 +178,7 @@ public class SupportChat {
         this.messages = messages;
     }
 
-    // Additional getters and setters
     
+    // Getters and Setters
+    // ...
 }
